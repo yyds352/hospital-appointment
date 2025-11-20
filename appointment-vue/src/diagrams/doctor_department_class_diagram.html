@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医生与科室管理模块类图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            max-width: 1100px;
+            width: 100%;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>医生与科室管理模块类图</h1>
+        <div class="mermaid">
+            classDiagram
+                class Doctor {
+                    +Long id
+                    +Long userId
+                    +Long departmentId
+                    +String name
+                    +String title
+                    +String specialty
+                    +String introduction
+                    +String photoUrl
+                    +String status
+                    +createTime
+                    +updateTime
+                    +getSchedule()
+                    +updateSchedule()
+                    +getAppointments()
+                }
+                
+                class Department {
+                    +Long id
+                    +String name
+                    +String description
+                    +String status
+                    +createTime
+                    +updateTime
+                    +getDoctors()
+                    +addDoctor()
+                    +removeDoctor()
+                }
+                
+                class DoctorController {
+                    +createDoctor()
+                    +updateDoctor()
+                    +deleteDoctor()
+                    +getDoctorList()
+                    +getDoctorDetail()
+                }
+                
+                class DepartmentController {
+                    +createDepartment()
+                    +updateDepartment()
+                    +deleteDepartment()
+                    +getDepartmentList()
+                    +getDepartmentDetail()
+                }
+                
+                class DoctorService {
+                    +createDoctor()
+                    +updateDoctor()
+                    +deleteDoctor()
+                    +getDoctorList()
+                    +getDoctorDetail()
+                    +validateDoctor()
+                }
+                
+                class DepartmentService {
+                    +createDepartment()
+                    +updateDepartment()
+                    +deleteDepartment()
+                    +getDepartmentList()
+                    +getDepartmentDetail()
+                    +validateDepartment()
+                }
+                
+                class DoctorRepository {
+                    +findByDepartmentId()
+                    +findByUserId()
+                    +findByStatus()
+                    +countByDepartment()
+                }
+                
+                class DepartmentRepository {
+                    +findByName()
+                    +findByStatus()
+                    +countDoctors()
+                }
+                
+                Doctor "1" *-- "1" Department : belongs to
+                Department "1" *-- "N" Doctor : has
+                DoctorController --> DoctorService : uses
+                DepartmentController --> DepartmentService : uses
+                DoctorService --> DoctorRepository : uses
+                DepartmentService --> DepartmentRepository : uses
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({
+            theme: 'default',
+            startOnLoad: true,
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true
+            }
+        });
+    </script>
+</body>
+</html> 

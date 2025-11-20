@@ -1,0 +1,43 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hospital1?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+#    url: jdbc:mysql://172.17.12.47:3306/hospital?useSSL=false&serverTimezone=UTC
+    username: root
+    password: root
+#    username: user123
+#    password: qwe123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  jackson:
+    date-format: yyyy-MM-dd
+    time-zone: GMT+8
+  security:
+    filter:
+      order: 10
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.appointment.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.example.appointment: DEBUG
+    org.springframework.security: DEBUG
+
+jwt:
+  secret: your-secret-key-must-be-at-least-32-characters-long
+  expiration: 86400000 # 24 hours

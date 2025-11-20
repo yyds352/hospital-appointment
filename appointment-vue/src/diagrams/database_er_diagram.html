@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医院预约系统数据库E-R图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>医院预约系统数据库E-R图</h1>
+        <div class="mermaid">
+            erDiagram
+                USER ||--o{ APPOINTMENT : makes
+                USER ||--o{ HEALTH_CHECK : creates
+                USER ||--o{ POST : writes
+                USER ||--o{ POST_COMMENT : comments
+                USER ||--o{ POST_FAVORITE : favorites
+                USER ||--o{ DOCTOR : is
+                DOCTOR ||--o{ DOCTOR_SCHEDULE : has
+                DOCTOR ||--o{ APPOINTMENT : accepts
+                DEPARTMENT ||--o{ DOCTOR : contains
+                DEPARTMENT ||--o{ APPOINTMENT : belongs_to
+                DEPARTMENT ||--o{ DOCTOR_SCHEDULE : schedules
+                POST ||--o{ POST_COMMENT : has
+                POST ||--o{ POST_FAVORITE : has
+
+                USER {
+                    bigint id PK
+                    varchar username
+                    varchar password
+                    varchar name
+                    varchar role
+                    varchar phone
+                    varchar email
+                    datetime created_at
+                    datetime updated_at
+                    varchar real_name
+                    int status
+                    bigint role_id
+                }
+
+                DOCTOR {
+                    bigint id PK
+                    bigint user_id FK
+                    bigint department_id FK
+                    varchar name
+                    varchar title
+                    varchar specialty
+                    varchar introduction
+                    varchar photo_url
+                    bit status
+                    datetime created_at
+                    datetime updated_at
+                }
+
+                DEPARTMENT {
+                    bigint id PK
+                    varchar name
+                    text description
+                    bit status
+                    datetime created_at
+                    datetime updated_at
+                }
+
+                DOCTOR_SCHEDULE {
+                    bigint id PK
+                    bigint doctor_id FK
+                    bigint department_id FK
+                    date schedule_date
+                    varchar period
+                    int max_appointments
+                    int available_appointments
+                    bit status
+                    datetime created_at
+                    datetime updated_at
+                }
+
+                APPOINTMENT {
+                    bigint id PK
+                    bigint patient_id FK
+                    bigint doctor_id FK
+                    bigint department_id FK
+                    datetime appointment_time
+                    varchar status
+                    varchar description
+                    datetime create_time
+                    datetime update_time
+                }
+
+                HEALTH_CHECK {
+                    bigint id PK
+                    bigint user_id FK
+                    varchar type
+                    text content
+                    int duration
+                    int mood
+                    datetime created_at
+                    datetime updated_at
+                }
+
+                POST {
+                    bigint id PK
+                    bigint user_id FK
+                    bigint category_id FK
+                    varchar title
+                    text content
+                    int views
+                    int likes
+                    varchar tags
+                    datetime created_at
+                    datetime updated_at
+                }
+
+                POST_COMMENT {
+                    bigint id PK
+                    bigint post_id FK
+                    bigint user_id FK
+                    text content
+                    int likes
+                    datetime created_at
+                    datetime updated_at
+                }
+
+                POST_FAVORITE {
+                    bigint id PK
+                    bigint post_id FK
+                    bigint user_id FK
+                    datetime created_at
+                }
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({
+            theme: 'default',
+            startOnLoad: true,
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true
+            }
+        });
+    </script>
+</body>
+</html> 

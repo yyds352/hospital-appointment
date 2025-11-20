@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>调试页面</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .debug-info { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { color: red; }
+        .success { color: green; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>医院预约系统 - 调试页面</h1>
+    
+    <div class="debug-info">
+        <h3>基本信息</h3>
+        <div id="basic-info"></div>
+    </div>
+    
+    <div class="debug-info">
+        <h3>Vue应用状态</h3>
+        <div id="vue-status"></div>
+    </div>
+    
+    <div class="debug-info">
+        <h3>测试结果</h3>
+        <div id="test-results"></div>
+    </div>
+    
+    <div>
+        <button onclick="testLoginPage()">测试登录页面</button>
+        <button onclick="testAPI()">测试API</button>
+        <button onclick="checkVue()">检查Vue状态</button>
+        <button onclick="location.reload()">刷新页面</button>
+    </div>
+
+    <script>
+        function log(id, message, type = 'info') {
+            const div = document.getElementById(id);
+            const p = document.createElement('p');
+            p.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            if (type === 'error') p.className = 'error';
+            if (type === 'success') p.className = 'success';
+            div.appendChild(p);
+        }
+
+        function testLoginPage() {
+            log('test-results', '开始测试登录页面...');
+            
+            // 尝试访问登录页面
+            fetch('/login')
+                .then(response => {
+                    log('test-results', `登录页面状态码: ${response.status}`);
+                    return response.text();
+                })
+                .then(html => {
+                    const hasContent = html.length > 1000;
+                    log('test-results', `登录页面内容长度: ${html.length} 字符`, hasContent ? 'success' : 'error');
+                    
+                    if (html.includes('<div id="app">')) {
+                        log('test-results', '✓ 找到#app元素', 'success');
+                    } else {
+                        log('test-results', '✗ 未找到#app元素', 'error');
+                    }
+                })
+                .catch(error => {
+                    log('test-results', `登录页面访问错误: ${error.message}`, 'error');
+                });
+        }
+
+        function testAPI() {
+            log('test-results', '开始测试API...');
+            
+            fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: 'admin', password: '123456' })
+            })
+            .then(response => {
+                log('test-results', `API状态码: ${response.status}`);
+                return response.json();
+            })
+            .then(data => {
+                if (data.code === 200) {
+                    log('test-results', '✓ API测试成功', 'success');
+                    log('test-results', `Token: ${data.data.token.substring(0, 50)}...`);
+                } else {
+                    log('test-results', `✗ API返回错误: ${data.message}`, 'error');
+                }
+            })
+            .catch(error => {
+                log('test-results', `API测试错误: ${error.message}`, 'error');
+            });
+        }
+
+        function checkVue() {
+            log('vue-status', '检查Vue应用状态...');
+            
+            if (window.Vue) {
+                log('vue-status', '✓ Vue已加载', 'success');
+                log('vue-status', `Vue版本: ${window.Vue.version}`);
+            } else {
+                log('vue-status', '✗ Vue未加载', 'error');
+            }
+            
+            const appElement = document.getElementById('app');
+            if (appElement) {
+                log('vue-status', '✓ 找到#app元素', 'success');
+                log('vue-status', `App内容长度: ${appElement.innerHTML.length}`);
+                log('vue-status', `App内容预览: ${appElement.innerHTML.substring(0, 100)}...`);
+            } else {
+                log('vue-status', '✗ 未找到#app元素', 'error');
+            }
+        }
+
+        // 页面加载时显示基本信息
+        window.onload = function() {
+            log('basic-info', `当前URL: ${window.location.href}`);
+            log('basic-info', `用户代理: ${navigator.userAgent.substring(0, 50)}...`);
+            log('basic-info', `页面加载时间: ${new Date().toLocaleString()}`);
+            
+            // 检查关键元素
+            const elements = ['app', 'basic-info', 'vue-status', 'test-results'];
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                log('basic-info', `${id}元素: ${element ? '✓ 存在' : '✗ 不存在'}`, element ? 'success' : 'error');
+            });
+        };
+    </script>
+</body>
+</html>

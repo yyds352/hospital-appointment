@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康论坛模块类图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            max-width: 1100px;
+            width: 100%;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .mermaid {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+        }
+        .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>健康论坛模块类图</h1>
+        <div class="mermaid">
+            classDiagram
+                class Post {
+                    +Long id
+                    +Long userId
+                    +Long categoryId
+                    +String title
+                    +String content
+                    +Integer viewCount
+                    +Integer likeCount
+                    +String status
+                    +createTime
+                    +updateTime
+                    +publish()
+                    +update()
+                    +delete()
+                }
+                
+                class Comment {
+                    +Long id
+                    +Long postId
+                    +Long userId
+                    +Long parentId
+                    +String content
+                    +Integer likeCount
+                    +String status
+                    +createTime
+                    +updateTime
+                    +addComment()
+                    +update()
+                    +delete()
+                }
+                
+                class PostCategory {
+                    +Long id
+                    +String name
+                    +String description
+                    +String status
+                    +createTime
+                    +updateTime
+                    +getPosts()
+                    +addPost()
+                }
+                
+                class PostFavorite {
+                    +Long id
+                    +Long userId
+                    +Long postId
+                    +createTime
+                    +addFavorite()
+                    +removeFavorite()
+                }
+                
+                class ForumController {
+                    +createPost()
+                    +updatePost()
+                    +deletePost()
+                    +getPostList()
+                    +getPostDetail()
+                }
+                
+                class CommentController {
+                    +addComment()
+                    +updateComment()
+                    +deleteComment()
+                    +getCommentList()
+                }
+                
+                class ForumAdminController {
+                    +reviewPost()
+                    +reviewComment()
+                    +manageCategory()
+                    +getStatistics()
+                }
+                
+                class PostService {
+                    +createPost()
+                    +updatePost()
+                    +deletePost()
+                    +getPostList()
+                    +getPostDetail()
+                }
+                
+                class CommentService {
+                    +addComment()
+                    +updateComment()
+                    +deleteComment()
+                    +getCommentList()
+                }
+                
+                class PostRepository {
+                    +findByCategory()
+                    +findByUserId()
+                    +findByStatus()
+                    +countByCategory()
+                }
+                
+                class CommentRepository {
+                    +findByPostId()
+                    +findByUserId()
+                    +findByParentId()
+                    +countByPostId()
+                }
+                
+                Post "1" *-- "N" Comment : has
+                Post "1" *-- "1" PostCategory : belongs to
+                Post "1" *-- "N" PostFavorite : has
+                ForumController --> PostService : uses
+                CommentController --> CommentService : uses
+                ForumAdminController --> PostService : uses
+                ForumAdminController --> CommentService : uses
+                PostService --> PostRepository : uses
+                CommentService --> CommentRepository : uses
+        </div>
+    </div>
+    <script>
+        mermaid.initialize({
+            theme: 'default',
+            startOnLoad: true,
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: false,
+                htmlLabels: true
+            }
+        });
+    </script>
+</body>
+</html> 
